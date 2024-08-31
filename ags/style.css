@@ -1,0 +1,223 @@
+@define-color primary #a50000;
+@define-color secondary #ffffff;
+@define-color tertiary #000000;
+@define-color quaternary #ffffff;
+
+* {
+  font-family: "CC Wild Words";
+  font-size: 12pt;
+  font-weight: bold;
+  border-radius: 8px;
+  transition-property: background-color;
+  transition-duration: 0.5s;
+  background-color: transparent;
+}
+
+.bar {
+  background-color: transparent;
+  color: @primary;
+}
+
+.workspaces button {
+ color: @primary;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+  margin-left: 3px;
+  margin-right: 3px;  
+  border-radius: 100px;
+}
+
+.workspaces button.focused {
+  background-color: @primary;
+  color: @tertiary;
+  box-shadow: #7A5980 0px 0px 3px;
+}
+
+
+.workspaces button:hover {
+  background-color: rgb(248, 189, 150);
+  color: rgb(26, 24, 38);
+}
+
+.launcher {
+  font-size: 20px;
+  padding: 0 8px;
+  color: #8d6594;
+  background-image: url("/path/to/your/image.jpg");
+  background-size: cover;
+}
+
+.media,
+.volume,
+.battery,
+.network
+.bluetooth,
+.power-menu {
+  padding: 0 10px;
+}
+
+.power-menu button {
+  color: @primary;
+}
+
+.app-launcher {
+  padding: 0 10px;
+
+}
+
+.app-launcher button {
+  color: @primary;
+}
+
+.volume {
+  color: @primary;
+}
+
+.clock button {
+  color: @primary;
+}
+
+.media {
+  color: @primary;
+}
+
+player {
+    padding: 10px;
+    min-width: 1px;
+}
+
+.player .img {
+    min-width: 50px;
+    min-height: 50px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    margin-right: 0.7em;
+}
+
+.player .title {
+    font-size: 12px;
+}
+
+.player .artist {
+    font-size: 10px;
+    color: @insensitive_fg_color;
+}
+
+.player scale.position {
+    padding: 0;
+    margin-bottom: 2em;
+}
+
+.player scale.position trough {
+    min-height: 8px;
+}
+
+.player scale.position highlight {
+    background-color: @primary;
+}
+
+.player scale.position slider {
+    color : @primary;
+}
+
+
+.player button {
+    min-height: 1em;
+    min-width: 1em;
+    padding: .1em;
+}
+
+.player button.play-pause {
+    margin: 0 2em;
+}
+
+
+menu {
+   background-color: @tertiary;
+}
+
+menu > menuitem {
+    color: @primary;
+}
+
+menu :hover *{
+  color: @quaternary;
+}
+
+
+window.notification-popups box.notifications.icon {
+    padding: .5em;
+}
+
+.icon {
+    min-width: 68px;
+    min-height: 68px;
+    margin-right: 1em;
+}
+
+.icon image {
+    font-size: 58px;
+    /* to center the icon */
+    margin: 5px;
+}
+
+.icon box {
+    min-width: 68px;
+    min-height: 68px;
+    border-radius: 7px;
+}
+
+.notification {
+    min-width: 400px;
+    border-radius: 11px;
+    padding: 1em;
+    margin: .5em;
+    border: 1px solid @wm_borders_edge;
+    background-color: @tertiary;
+}
+
+.notification.critical {
+    border: 1px solid lightcoral;
+}
+
+.title {
+    color: @primary;
+    font-size: 14px;
+}
+
+.body {
+    color: @secondary;
+    font-size: 8px;
+}
+
+.actions .action-button {
+    margin: 0 .4em;
+    margin-top: .8em;
+}
+
+.actions .action-button:first-child {
+    margin-left: 0;
+}
+
+.actions .action-button:last-child {
+    margin-right: 0;
+}
+
+.Battery { 
+    color: @primary; 
+    min-width: 40px; 
+    min-height: 40px;
+    font-size: 1.5px; 
+    margin: 7px;
+}
+
+.SystemTray {
+    color: @primary;
+}
+
+.processor {
+    color: @primary;
+}
