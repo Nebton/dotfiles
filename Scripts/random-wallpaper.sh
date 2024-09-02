@@ -5,6 +5,7 @@ WALLPAPER_DIR="$HOME/Wallpapers"
 CSS_FILE="$HOME/.config/ags/style.css"
 CONFIG_FILE="$HOME/.config/wallpaper_colors.conf"
 THEME_FILE="$HOME/.config/rofi/config.rasi"
+HYPRLAND_FILE="$HOME/.config/hypr/hyprland.conf"
 # Check if Hyprpaper is installed
 command -v hyprpaper >/dev/null 2>&1 || { echo >&2 "Hyprpaper is required but not installed. Aborting."; exit 1; }
 
@@ -53,6 +54,8 @@ sed -i "s/@define-color secondary .*/@define-color secondary $secondary;/" "$CSS
 sed -i "s/@define-color tertiary .*/@define-color tertiary $tertiary;/" "$CSS_FILE"
 sed -i "s/@define-color quaternary .*/@define-color quaternary $quaternary;/" "$CSS_FILE"
 sed -i "s|@theme .*|@theme \"$theme\"|" "$THEME_FILE"
+primary=$(echo $primary | cut -f2 -d"#")"ee"
+sed -i "s/col.active_border.*/col.active_border=rgba\($primary\)/g" "$HYPRLAND_FILE"
 # Create a temporary configuration file for hyprpaper
 temp_config=$(mktemp)
 

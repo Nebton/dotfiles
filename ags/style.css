@@ -1,7 +1,7 @@
-@define-color primary #ffffff;
+@define-color primary #a50000;
 @define-color secondary #ffffff;
 @define-color tertiary #000000;
-@define-color quaternary #a50000;
+@define-color quaternary #ffffff;
 
 * {
   font-family: "CC Wild Words";
@@ -221,3 +221,25 @@ window.notification-popups box.notifications.icon {
 .processor {
     color: @primary;
 }
+
+.media-box {
+	background-color: @base-transparent;
+	min-width: 300px;
+	min-height: 435px;
+	border-radius: 25px;
+
+}
+
+.cover-art {
+	background-size: cover;
+	min-width: 250px;
+	min-height: 250px;
+	margin: 30px 30px 7px;
+	border-radius: 12px;
+}
+
+.media-controls {
+	font-size: 35px;
+	margin: 3px 0;
+}
+

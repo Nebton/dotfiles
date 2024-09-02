@@ -1,11 +1,10 @@
 const hyprland = await Service.import("hyprland")
-const notifications = await Service.import("notifications")
-const mpris = await Service.import("mpris")
 const audio = await Service.import("audio")
 const battery = await Service.import("battery")
 const network = await Service.import("network")
 const systemtray = await Service.import('systemtray')
 const powerProfiles = await Service.import('powerprofiles')
+
 
 import { NotificationPopups } from "./notificationPopups.js"
 
@@ -70,7 +69,6 @@ function Clock() {
 }
 
 
-
 const truncateText = (text, maxLength) => {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 };
@@ -83,6 +81,7 @@ function Volume() {
         1: "audio-volume-low",
         0: "audio-volume-muted",
     }
+
 
     function getIcon() {
         const icon = audio.speaker.is_muted ? 0 : [67, 34, 1, 0].find(
@@ -311,7 +310,6 @@ function Center() {
         spacing: 8,
         children: [
             Clock(),
-
         ],
     })
 }
