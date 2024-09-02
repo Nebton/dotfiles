@@ -1,0 +1,4 @@
+alias ll='ls -al'
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias config='/usr/bin/git --git-dir=/home/doom/dotfiles/.git --work-tree=/home/doom/dotfiles'
