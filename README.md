@@ -13,10 +13,10 @@ Welcome to my dotfiles! This configuration is heavily inspired by **Berserk** an
 Here are some screenshots of my desktop setup:
 
 ### AGS in Action
-![AGS Example 1](AGS1.png)
+![AGS Example 1](./ags/AGS1.png)
 
 ### Custom Configurations
-![AGS Example 2](AGS2.png)
+![AGS Example 2](./ags/AGS2.png)
 
 ## Getting Started
 
