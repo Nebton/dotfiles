@@ -1,3 +1,4 @@
+import { NotificationPopups } from "./notificationPopups.js"
 const hyprland = await Service.import("hyprland")
 const audio = await Service.import("audio")
 const battery = await Service.import("battery")
@@ -5,9 +6,7 @@ const network = await Service.import("network")
 const systemtray = await Service.import('systemtray')
 const powerProfiles = await Service.import('powerprofiles')
 
-
-import { NotificationPopups } from "./notificationPopups.js"
-
+// Top-level widgets
 function Workspaces() {
     const activeId = hyprland.active.workspace.bind("id")
     const workspaces = hyprland.bind("workspaces")
@@ -27,7 +26,7 @@ function Workspaces() {
 }
 
 function Clock() {
-
+    //Two time formats 
     const timeFormat = Variable("", {
         poll: [1000, 'date "+%H:%M 󰥔"'],
     })
