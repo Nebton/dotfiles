@@ -1,7 +1,7 @@
-@define-color primary #a50000;
+@define-color primary #ffffff;
 @define-color secondary #ffffff;
 @define-color tertiary #000000;
-@define-color quaternary #ffffff;
+@define-color quaternary #9f87ff;
 
 * {
   font-family: "CC Wild Words";

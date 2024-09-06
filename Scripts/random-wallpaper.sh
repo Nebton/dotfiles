@@ -7,6 +7,7 @@ CONFIG_FILE="$HOME/.config/wallpaper_colors.conf"
 THEME_FILE="$HOME/.config/rofi/config.rasi"
 HYPRLAND_FILE="$HOME/.config/hypr/hyprland.conf"
 NVIM_FILE="$HOME/.config/nvim/init.lua"
+ZSHLINE_FILE="$HOME/.config/zsh/prompt_purification_setup"
 # Check if Hyprpaper is installed
 command -v hyprpaper >/dev/null 2>&1 || { echo >&2 "Hyprpaper is required but not installed. Aborting."; exit 1; }
 
@@ -47,7 +48,7 @@ if [ -z "$color_scheme" ]; then
 fi
 
 # Split color scheme into individual colors
-IFS=',' read -r primary secondary tertiary quaternary theme nvim<<< "$color_scheme"
+IFS=',' read -r primary secondary tertiary quaternary prompt_color theme nvim<<< "$color_scheme"
 
 # Update CSS file
 sed -i "s/@define-color primary .*/@define-color primary $primary;/" "$CSS_FILE"
@@ -58,6 +59,8 @@ sed -i "s|@theme .*|@theme \"$theme\"|" "$THEME_FILE"
 primary=$(echo $primary | cut -f2 -d"#")"ee"
 sed -i "s/col.active_border.*/col.active_border=rgba\($primary\)/g" "$HYPRLAND_FILE"
 sed -i "s/vim.cmd.colorscheme.*/vim.cmd.colorscheme \"$nvim\"/g" "$NVIM_FILE"
+echo "color is $prompt_color"
+sed -i "s|=\"%F{.*}\"|=\"%F{$prompt_color}\"|g" "$ZSHLINE_FILE"
 # Create a temporary configuration file for hyprpaper
 temp_config=$(mktemp)
 
@@ -72,7 +75,7 @@ hyprpaper -c "$temp_config"
 rm "$temp_config"
 
 echo "Applied wallpaper: $selected_file"
-echo "Updated CSS with colors: Primary: $primary, Secondary: $secondary, Tertiary: $tertiary, Quaternary: $quaternary"
+echo "Updated CSS with colors: Primary: $primary, Secondary: $secondary, Tertiary: $tertiary, Quaternary: $quaternary , Prompt Color : $prompt_color"
 echo "Updated rofi theme to $theme"
 
 # Optionally, restart ags to apply the new CSS

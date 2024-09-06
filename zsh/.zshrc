@@ -2,7 +2,10 @@ alias ls='ls -a --color=auto'
 alias grep='grep --color=auto'
 alias svim='sudo -E nvim'
 alias config='/usr/bin/git --git-dir=/home/doom/dotfiles/.git --work-tree=/home/doom/dotfiles'
-
+alias ga='git add .'
+alias gs='git status'
+alias gc='git commit'
+alias gp='git push'
 fpath=($DOTFILES/zsh/ $fpath)
 autoload -Uz prompt_purification_setup && prompt_purification_setup
 autoload -Uz cursor; cursor
@@ -12,6 +15,9 @@ source $DOTFILES/zsh/completion.zsh
 setopt AUTO_PUSHD           # Push the current directory visited on the stack.
 setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
 setopt PUSHD_SILENT         # Do not print the directory stack after pushd or popd.
+setopt SHARE_HISTORY
+setopt APPEND_HISTORY
+
 alias d='dirs -v'
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
 
@@ -41,3 +47,5 @@ bindkey '^Y' yank
 
 # Accept line (Enter)
 bindkey '^M' accept-line
+
+

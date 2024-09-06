@@ -1,4 +1,5 @@
-
+# Define the color variable
+COLOR_HEX="%F{#9f87ff}"
 # prompt:
 # %F => color dict
 # %f => reset color
@@ -87,8 +88,21 @@ prompt_git_branch() {
 }
 
 prompt_git_info() {
-    [ ! -z "$vcs_info_msg_0_" ] && echo "$ZSH_THEME_GIT_PROMPT_PREFIX%F{white}$vcs_info_msg_0_%f$ZSH_THEME_GIT_PROMPT_SUFFIX"
+    [ ! -z "$vcs_info_msg_0_" ] && echo "$ZSH_THEME_GIT_PROMPT_PREFIX%F{#ffffff}$vcs_info_msg_0_%f$ZSH_THEME_GIT_PROMPT_SUFFIX"
 }
+
+prompt_directory() {
+        local width=$(tput cols) # Get the terminal width
+        local path=$(pwd)
+        local short_path=$(basename "$path")
+
+        # Default to the full path, but switch to the last directory if it exceeds half the terminal width
+        if [[ ${#path} -gt $((width / 2)) ]]; then
+            echo "$short_path"
+        else
+            echo "${path/#$HOME/~}" # Shorten $HOME to ~
+        fi
+    }
 
 prompt_purity_precmd() {
     # Pass a line before each prompt
@@ -101,7 +115,7 @@ prompt_purification_setup() {
     autoload -Uz add-zsh-hook
     add-zsh-hook precmd prompt_purity_precmd
 
-    ZSH_THEME_GIT_PROMPT_PREFIX="%F{red}𒌐%f:"
+    ZSH_THEME_GIT_PROMPT_PREFIX="${COLOR_HEX}𒌐%f:"
     ZSH_THEME_GIT_PROMPT_DIRTY=""
     ZSH_THEME_GIT_PROMPT_CLEAN=""
 
@@ -117,7 +131,8 @@ prompt_purification_setup() {
 
     prompt_git_branch
     RPROMPT='$(prompt_git_info) $(git_prompt_status)'
-    PROMPT=$'%F{white}%n@%F{red}%m%F{white}%~ %B%F{red}>%f%b '
+    PROMPT=$'%F{white}%n@${COLOR_HEX}%m%F{white}%~ %B${COLOR_HEX}>%f%b'
+
 }
 
 prompt_purification_setup
