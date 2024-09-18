@@ -1,13 +1,13 @@
-@define-color primary #ffffff;
-@define-color secondary #ffffff;
-@define-color tertiary #000000;
-@define-color quaternary #9f87ff;
+@define-color primary #5c606c;
+@define-color secondary #1d212a;
+@define-color tertiary #ffffff;
+@define-color quaternary #000000;
 
 * {
   font-family: "CC Wild Words";
-  font-size: 12pt;
+  font-size: 11pt;
   font-weight: bold;
-  border-radius: 8px;
+  border-radius: 12px;
   transition-property: background-color;
   transition-duration: 0.5s;
   background-color: transparent;
@@ -21,7 +21,7 @@
 .workspaces button {
  color: @primary;
   margin-top: 3px;
-  margin-bottom: 3px;
+  margin-bottom: 6px;
   padding-left: 6px;
   padding-right: 6px;
   margin-left: 3px;
@@ -154,7 +154,7 @@ window.notification-popups box.notifications.icon {
 
 .icon {
     min-width: 68px;
-    min-height: 68px;
+    min-height: 28px;
     margin-right: 1em;
 }
 
@@ -166,7 +166,7 @@ window.notification-popups box.notifications.icon {
 
 .icon box {
     min-width: 68px;
-    min-height: 68px;
+    min-height: 28px;
     border-radius: 7px;
 }
 

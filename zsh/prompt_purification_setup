@@ -1,5 +1,5 @@
 # Define the color variable
-COLOR_HEX="%F{#9f87ff}"
+COLOR_HEX="%F{#5c606c}"
 # prompt:
 # %F => color dict
 # %f => reset color
@@ -131,7 +131,7 @@ prompt_purification_setup() {
 
     prompt_git_branch
     RPROMPT='$(prompt_git_info) $(git_prompt_status)'
-    PROMPT=$'%F{white}%n@${COLOR_HEX}%m%F{white}%~ %B${COLOR_HEX}>%f%b'
+    PROMPT=$'%F{white}%n@${COLOR_HEX}%m%F{white}%~ %B${COLOR_HEX}> %f%b'
 
 }
 

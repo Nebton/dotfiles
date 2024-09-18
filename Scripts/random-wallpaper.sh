@@ -8,6 +8,7 @@ THEME_FILE="$HOME/.config/rofi/config.rasi"
 HYPRLAND_FILE="$HOME/.config/hypr/hyprland.conf"
 NVIM_FILE="$HOME/.config/nvim/init.lua"
 ZSHLINE_FILE="$HOME/.config/zsh/prompt_purification_setup"
+KITTY_FILE="$HOME/.config/kitty/kitty.conf"
 # Check if Hyprpaper is installed
 command -v hyprpaper >/dev/null 2>&1 || { echo >&2 "Hyprpaper is required but not installed. Aborting."; exit 1; }
 
@@ -61,6 +62,7 @@ sed -i "s/col.active_border.*/col.active_border=rgba\($primary\)/g" "$HYPRLAND_F
 sed -i "s/vim.cmd.colorscheme.*/vim.cmd.colorscheme \"$nvim\"/g" "$NVIM_FILE"
 echo "color is $prompt_color"
 sed -i "s|=\"%F{.*}\"|=\"%F{$prompt_color}\"|g" "$ZSHLINE_FILE"
+sed -i "s|selection_background .*|selection_background $prompt_color|g" "$KITTY_FILE"
 # Create a temporary configuration file for hyprpaper
 temp_config=$(mktemp)
 
