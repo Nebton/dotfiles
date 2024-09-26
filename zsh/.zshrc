@@ -6,6 +6,7 @@ alias ga='git add .'
 alias gs='git status'
 alias gc='git commit'
 alias gp='git push'
+alias nv='nvim .'
 fpath=($DOTFILES/zsh/ $fpath)
 autoload -Uz prompt_purification_setup && prompt_purification_setup
 autoload -Uz cursor; cursor
@@ -49,3 +50,4 @@ bindkey '^Y' yank
 bindkey '^M' accept-line
 
 
+bindkey ^R history-incremental-search-backward

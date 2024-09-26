@@ -97,6 +97,9 @@ vim.g.have_nerd_font = true
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
+-- Auto update directory to opened file, could work but better alternative is just to nvim . from a high directory, then space + sf to search files FAST
+-- vim.opt.autochdir = true
+
 vim.opt.termguicolors = true
 -- Make line numbers default
 vim.opt.number = true
@@ -383,7 +386,80 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
-      -- Slightly advanced example of overriding default behavior and theme
+      -- Keymaps for other git operations with Telescope (unchanged)
+      vim.keymap.set('n', '<leader>gc', builtin.git_commits, { desc = 'Git [C]ommits' })
+      vim.keymap.set('n', '<leader>gb', builtin.git_branches, { desc = 'Git [B]ranches' })
+      vim.keymap.set('n', '<leader>gs', builtin.git_stash, { desc = 'Git [S]tash' })
+      vim.keymap.set('n', '<leader>gf', builtin.git_status, { desc = 'Git [F]iles Status' })
+
+      -- Function to view git diff of current file (both staged and unstaged changes)
+      local function git_diff_current_file()
+        local file_path = vim.fn.expand '%:p' -- Get the full path of the current file
+        local relative_path = vim.fn.fnamemodify(file_path, ':~:.') -- Get the relative path
+
+        -- Debug information
+        print('Current file path: ' .. file_path)
+        print('Relative path: ' .. relative_path)
+
+        -- Check if the file is in a git repository
+        local is_git_repo = vim.fn.system('git rev-parse --is-inside-work-tree 2>/dev/null'):match '^true'
+        if not is_git_repo then
+          vim.api.nvim_err_writeln 'Not a git repository'
+          return
+        end
+
+        -- Check if the file is tracked by git
+        local is_tracked = vim.fn.system('git ls-files --error-unmatch ' .. vim.fn.shellescape(relative_path) .. ' 2>/dev/null')
+        local exit_code = vim.v.shell_error
+        if exit_code ~= 0 then
+          vim.api.nvim_err_writeln 'File is not tracked by git'
+          return
+        end
+
+        -- Get the unstaged diff
+        local unstaged_diff = vim.fn.system('git diff ' .. vim.fn.shellescape(relative_path))
+
+        -- Get the staged diff
+        local staged_diff = vim.fn.system('git diff --cached ' .. vim.fn.shellescape(relative_path))
+
+        -- Open a new split
+        vim.cmd 'vsplit'
+        vim.cmd 'enew'
+
+        local lines = {}
+        if unstaged_diff:match '^%s*$' and staged_diff:match '^%s*$' then
+          table.insert(lines, 'No changes (staged or unstaged) in ' .. relative_path)
+        else
+          if not unstaged_diff:match '^%s*$' then
+            table.insert(lines, 'Unstaged changes:')
+            table.insert(lines, '==================')
+            for line in unstaged_diff:gmatch '[^\r\n]+' do
+              table.insert(lines, line)
+            end
+            table.insert(lines, '')
+          end
+          if not staged_diff:match '^%s*$' then
+            table.insert(lines, 'Staged changes:')
+            table.insert(lines, '===============')
+            for line in staged_diff:gmatch '[^\r\n]+' do
+              table.insert(lines, line)
+            end
+          end
+        end
+
+        vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+
+        -- Set buffer options
+        vim.cmd 'setlocal buftype=nofile'
+        vim.cmd 'setlocal bufhidden=hide'
+        vim.cmd 'setlocal noswapfile'
+        vim.cmd 'setlocal nonumber'
+        vim.cmd 'setlocal signcolumn=no'
+        vim.cmd 'setlocal filetype=diff'
+      end
+
+      -- Keymap to view git diff of current file
+      vim.keymap.set('n', '<leader>gd', git_diff_current_file, { desc = 'Git [D]iff current file (staged and unstaged)' }) --  Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -813,7 +889,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme "gotham"
+      vim.cmd.colorscheme 'starrynight'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
