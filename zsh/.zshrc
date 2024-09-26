@@ -49,5 +49,7 @@ bindkey '^Y' yank
 # Accept line (Enter)
 bindkey '^M' accept-line
 
-
+# Effective History Search
 bindkey ^R history-incremental-search-backward
+bindkey -M isearch 'n' history-incremental-search-forward
+bindkey -M isearch 'N' history-incremental-search-backward
