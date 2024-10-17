@@ -660,7 +660,7 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -747,7 +747,7 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -889,7 +889,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme "starrynight"
+      vim.cmd.colorscheme "gotham"
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -1037,3 +1037,11 @@ vim.keymap.set('n', '<C-a><C-c>', function()
   -- Optionally, you can notify the user
   vim.notify('File content copied to clipboard', 'info')
 end, { noremap = true, silent = true })
+
+-- Add comments to terraform
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'terraform',
+  callback = function()
+    vim.opt_local.commentstring = '# %s'
+  end,
+})

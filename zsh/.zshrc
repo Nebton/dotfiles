@@ -1,4 +1,5 @@
 alias ls='ls -a --color=auto'
+alias ll='ls -al --color=auto'
 alias grep='grep --color=auto'
 alias svim='sudo -E nvim'
 alias config='/usr/bin/git --git-dir=/home/doom/dotfiles/.git --work-tree=/home/doom/dotfiles'
@@ -10,7 +11,7 @@ alias nv='nvim .'
 fpath=($DOTFILES/zsh/ $fpath)
 autoload -Uz prompt_purification_setup && prompt_purification_setup
 autoload -Uz cursor; cursor
-autoload -U compinit; compinit
+autoload -Uz compinit; compinit
 _comp_options+=(globdots) # With hidden files
 source $DOTFILES/zsh/completion.zsh
 setopt AUTO_PUSHD           # Push the current directory visited on the stack.
@@ -53,3 +54,9 @@ bindkey '^M' accept-line
 bindkey ^R history-incremental-search-backward
 bindkey -M isearch 'n' history-incremental-search-forward
 bindkey -M isearch 'N' history-incremental-search-backward
+
+
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/bin/vault vault
+

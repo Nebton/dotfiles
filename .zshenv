@@ -14,3 +14,6 @@ export SAVEHIST=10000                   # Maximum events in history file
 
 # Man pages
 export MANPAGER='nvim +Man!'
+
+# Vault Address
+export VAULT_ADDR=http://127.0.0.1:8200
