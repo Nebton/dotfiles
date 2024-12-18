@@ -19,7 +19,10 @@ setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
 setopt PUSHD_SILENT         # Do not print the directory stack after pushd or popd.
 setopt SHARE_HISTORY
 setopt APPEND_HISTORY
-
+# Add Python binaries to PATH
+PATH=$PATH:/home/doom/.local/bin/
+# Add Go binaries to PATH
+PATH=$PATH:/home/doom/go/bin
 alias d='dirs -v'
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
 
@@ -59,4 +62,5 @@ bindkey -M isearch 'N' history-incremental-search-backward
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/bin/vault vault
+
 

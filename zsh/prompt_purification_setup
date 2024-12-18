@@ -1,5 +1,5 @@
 # Define the color variable
-COLOR_HEX="%F{#5c606c}"
+COLOR_HEX="%F{#9f87ff}"
 # prompt:
 # %F => color dict
 # %f => reset color

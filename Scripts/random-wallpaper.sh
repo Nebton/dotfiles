@@ -69,6 +69,7 @@ temp_config=$(mktemp)
 # Write the configuration to the temporary file
 echo "preload = $selected_file" > "$temp_config"
 echo "wallpaper = eDP-1, $selected_file" >> "$temp_config"
+echo "wallpaper = DP-2, $selected_file" >> "$temp_config"
 
 # Execute hyprpaper with the temporary configuration file
 hyprpaper -c "$temp_config"
