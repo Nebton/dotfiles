@@ -2,11 +2,11 @@ alias ls='ls -a --color=auto'
 alias ll='ls -al --color=auto'
 alias grep='grep --color=auto'
 alias svim='sudo -E nvim'
-alias config='/usr/bin/git --git-dir=/home/doom/dotfiles/.git --work-tree=/home/doom/dotfiles'
+alias config='/usr/bin/git --git-dir=/home/aelbarro/dotfiles/.git --work-tree=/home/aelbarro/dotfiles'
 alias ga='git add .'
 alias gs='git status'
-alias gc='git commit'
-alias gp='git push'
+alias gmc='git commit'
+alias gpsh='git push'
 alias nv='nvim .'
 fpath=($DOTFILES/zsh/ $fpath)
 autoload -Uz prompt_purification_setup && prompt_purification_setup
@@ -20,9 +20,12 @@ setopt PUSHD_SILENT         # Do not print the directory stack after pushd or po
 setopt SHARE_HISTORY
 setopt APPEND_HISTORY
 # Add Python binaries to PATH
-PATH=$PATH:/home/doom/.local/bin/
+PATH=$PATH:/home/aelbarro/.local/bin/
 # Add Go binaries to PATH
-PATH=$PATH:/home/doom/go/bin
+#
+PATH=$PATH:/home/aelbarro/.local/squashfs-root/usr/bin   # Neovim
+PATH=$PATH:/home/aelbarro/.config/local/share/nvim/mason/bin # Neovim Mason Binaries
+PATH=$PATH:/home/aelbarro/go/bin
 alias d='dirs -v'
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
 
@@ -55,8 +58,6 @@ bindkey '^M' accept-line
 
 # Effective History Search
 bindkey ^R history-incremental-search-backward
-bindkey -M isearch 'n' history-incremental-search-forward
-bindkey -M isearch 'N' history-incremental-search-backward
 
 
 
