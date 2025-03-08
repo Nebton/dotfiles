@@ -231,6 +231,47 @@ require('lazy').setup({
     },
     -- See Commands section for default commands if you want to lazy load on them
   },
+  {
+    'stevearc/oil.nvim',
+    ---@module 'oil'
+    ---@type oil.SetupOpts
+    opts = {
+      -- Set to false if you don't have a nerd font
+      view_options = {
+        show_hidden = true,
+        -- Use this for non-nerd fonts
+        is_always_hidden = function(name, bufnr)
+          return name == '..'
+        end,
+      },
+      keymaps = {
+        ['g?'] = 'actions.show_help',
+        ['<CR>'] = 'actions.select',
+        ['<C-v>'] = 'actions.select_vsplit',
+        ['<C-h>'] = 'actions.select_split',
+        ['<C-t>'] = 'actions.select_tab',
+        ['<C-p>'] = 'actions.preview',
+        ['<C-c>'] = 'actions.close',
+        ['<C-l>'] = 'actions.refresh',
+        ['-'] = 'actions.parent',
+        ['_'] = 'actions.open_cwd',
+        ['`'] = 'actions.cd',
+        ['~'] = 'actions.tcd',
+        ['gs'] = 'actions.change_sort',
+        ['gx'] = 'actions.open_external',
+        ['g.'] = 'actions.toggle_hidden',
+      },
+      use_default_keymaps = false,
+    },
+    keys = {
+      { '-', '<cmd>Oil<CR>', desc = 'Open parent directory with Oil' },
+    },
+    -- Optional dependencies
+    dependencies = { { 'echasnovski/mini.icons', opts = {} } },
+    -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+    -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+    lazy = false,
+  },
 
   -- NOTE: Plugins can specify dependencies.
   --
@@ -830,7 +871,12 @@ require('lazy').setup({
   },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  {
+    'folke/todo-comments.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = { signs = false },
+  },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -873,7 +919,19 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -957,7 +1015,7 @@ vim.keymap.set('i', '{', '{}<left>', { noremap = true })
 vim.keymap.set('i', '{<CR>', '{<CR>}<ESC>O', { noremap = true })
 vim.keymap.set('i', '{;<CR>', '{<CR>};<ESC>O', { noremap = true })
 
-vim.keymap.set('n', '<leader>co', '<cmd>CopilotChat<CR>', { desc = 'Open CopilotChat' })
+vim.keymap.set('n', '<leader>co', '<cmd>CopilotChatOpen<CR>', { desc = 'Open CopilotChat' })
 
 -- Binding to copy content of file : Ctrl-A Ctrl-C
 vim.keymap.set('n', '<C-a><C-c>', function()

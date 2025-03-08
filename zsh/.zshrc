@@ -5,7 +5,7 @@ alias svim='sudo -E nvim'
 alias config='/usr/bin/git --git-dir=/home/aelbarro/dotfiles/.git --work-tree=/home/aelbarro/dotfiles'
 alias ga='git add .'
 alias gs='git status'
-alias gmc='git commit'
+alias gmc='git commit -m'
 alias gpsh='git push'
 alias nv='nvim .'
 fpath=($DOTFILES/zsh/ $fpath)
