@@ -272,6 +272,21 @@ require('lazy').setup({
     -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
     lazy = false,
   },
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    config = function()
+      require('toggleterm').setup {
+        size = 20,
+        open_mapping = [[<C-\>]],
+        hide_numbers = true,
+        shade_terminals = true,
+        direction = 'float',
+        close_on_exit = true,
+        shell = 'pwsh.exe', -- Set PowerShell as the shell
+      }
+    end,
+  },
 
   -- NOTE: Plugins can specify dependencies.
   --
@@ -359,102 +374,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
-      -- Keymaps for other git operations with Telescope (unchanged)
-      vim.keymap.set('n', '<leader>gc', builtin.git_commits, { desc = 'Git [C]ommits' })
-      vim.keymap.set('n', '<leader>gb', builtin.git_branches, { desc = 'Git [B]ranches' })
-      vim.keymap.set('n', '<leader>gs', builtin.git_stash, { desc = 'Git [S]tash' })
-      vim.keymap.set('n', '<leader>gf', builtin.git_status, { desc = 'Git [F]iles Status' })
-
-      -- Function to view git diff of current file (both staged and unstaged changes)
-      local function git_diff_current_file()
-        local file_path = vim.fn.expand '%:p' -- Get the full path of the current file
-        local relative_path = vim.fn.fnamemodify(file_path, ':~:.') -- Get the relative path
-
-        -- Debug information
-        print('Current file path: ' .. file_path)
-        print('Relative path: ' .. relative_path)
-
-        -- Check if the file is in a git repository
-        local is_git_repo = vim.fn.system('git rev-parse --is-inside-work-tree 2>/dev/null'):match '^true'
-        if not is_git_repo then
-          vim.api.nvim_err_writeln 'Not a git repository'
-          return
-        end
-
-        -- Check if the file is tracked by git
-        local is_tracked = vim.fn.system('git ls-files --error-unmatch ' .. vim.fn.shellescape(relative_path) .. ' 2>/dev/null')
-        local exit_code = vim.v.shell_error
-        if exit_code ~= 0 then
-          vim.api.nvim_err_writeln 'File is not tracked by git'
-          return
-        end
-
-        -- Get the unstaged diff
-        local unstaged_diff = vim.fn.system('git diff ' .. vim.fn.shellescape(relative_path))
-
-        -- Get the staged diff
-        local staged_diff = vim.fn.system('git diff --cached ' .. vim.fn.shellescape(relative_path))
-
-        -- Open a new split
-        vim.cmd 'vsplit'
-        vim.cmd 'enew'
-
-        local lines = {}
-        if unstaged_diff:match '^%s*$' and staged_diff:match '^%s*$' then
-          table.insert(lines, 'No changes (staged or unstaged) in ' .. relative_path)
-        else
-          if not unstaged_diff:match '^%s*$' then
-            table.insert(lines, 'Unstaged changes:')
-            table.insert(lines, '==================')
-            for line in unstaged_diff:gmatch '[^\r\n]+' do
-              table.insert(lines, line)
-            end
-            table.insert(lines, '')
-          end
-          if not staged_diff:match '^%s*$' then
-            table.insert(lines, 'Staged changes:')
-            table.insert(lines, '===============')
-            for line in staged_diff:gmatch '[^\r\n]+' do
-              table.insert(lines, line)
-            end
-          end
-        end
-
-        vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
-
-        -- Set buffer options
-        vim.cmd 'setlocal buftype=nofile'
-        vim.cmd 'setlocal bufhidden=hide'
-        vim.cmd 'setlocal noswapfile'
-        vim.cmd 'setlocal nonumber'
-        vim.cmd 'setlocal signcolumn=no'
-        vim.cmd 'setlocal filetype=diff'
-      end
-
-      -- Keymap to view git diff of current file
-      vim.keymap.set('n', '<leader>gd', git_diff_current_file, { desc = 'Git [D]iff current file (staged and unstaged)' }) --  Slightly advanced example of overriding default behavior and theme
-      vim.keymap.set('n', '<leader>/', function()
-        -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
-          previewer = false,
-        })
-      end, { desc = '[/] Fuzzily search in current buffer' })
-
-      -- It's also possible to pass additional configuration options.
-      --  See `:help telescope.builtin.live_grep()` for information about particular keys
-      vim.keymap.set('n', '<leader>s/', function()
-        builtin.live_grep {
-          grep_open_files = true,
-          prompt_title = 'Live Grep in Open Files',
-        }
-      end, { desc = '[S]earch [/] in Open Files' })
-
-      -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function()
-        builtin.find_files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = '[S]earch [N]eovim files' })
     end,
   },
 
@@ -1043,3 +962,30 @@ vim.api.nvim_create_autocmd('FileType', {
 vim.cmd 'set nocompatible'
 vim.cmd 'filetype plugin indent on'
 vim.cmd 'syntax on'
+
+local Terminal = require('toggleterm.terminal').Terminal
+local lazygit = Terminal:new {
+  cmd = 'lazygit',
+  hidden = true,
+  direction = 'float',
+  float_opts = {
+    border = 'single',
+    width = function()
+      return vim.o.columns
+    end,
+    height = function()
+      return vim.o.lines
+    end,
+  },
+  on_open = function(term)
+    vim.cmd 'startinsert!'
+    -- Set the terminal to fullscreen
+    vim.api.nvim_win_set_option(term.window, 'winblend', 0)
+  end,
+}
+
+function _lazygit_toggle()
+  lazygit:toggle()
+end
+
+vim.api.nvim_set_keymap('n', '<leader>g', '<cmd>lua _lazygit_toggle()<CR>', { noremap = true, silent = true, desc = 'Lazy [G]it' })
