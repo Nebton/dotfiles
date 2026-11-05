@@ -2,7 +2,6 @@ import { NotificationPopups } from "./notificationPopups.js"
 const hyprland = await Service.import("hyprland")
 const audio = await Service.import("audio")
 const battery = await Service.import("battery")
-const network = await Service.import("network")
 const systemtray = await Service.import('systemtray')
 const powerProfiles = await Service.import('powerprofiles')
 
@@ -136,20 +135,16 @@ function Volume() {
 
 function SystemTray() {
     /** @param {import('types/service/systemtray').TrayItem} item */
-    const SysTrayItem = item => {
-        const icon = network.wifi.bind("icon_name")
-        return Widget.Button({
-            className: 'SystemTray',
-            child: Widget.Box({
-                children: [
-                    Widget.Icon({ icon })
-                ]
-            }),
-            onPrimaryClick: (self, event) => item.openMenu(event),
-            onMiddleClick: () => Utils.execAsync(`bash -c "killall nm-connection-editor || nm-connection-editor"`).catch(error => Utils.notify(`Error : ${error}`)),
-
-        });
-    };
+    const SysTrayItem = item => Widget.Button({
+        className: 'SystemTray',
+        child: Widget.Icon({ icon: item.bind('icon') }),
+        tooltipMarkup: item.bind('tooltip_markup'),
+        onPrimaryClick: (_, event) => item.is_menu
+            ? item.openMenu(event)
+            : item.activate(event),
+        onSecondaryClick: (_, event) => item.openMenu(event),
+        onMiddleClick: (_, event) => item.secondaryActivate(event),
+    });
     const sysTray = Widget.Box({
         children: systemtray.bind('items').as(i => i.map(SysTrayItem)),
     })

@@ -1,0 +1,5 @@
+#!/bin/sh
+# AGS 1.x compatibility with GJS 1.88+: set paths before GJS starts.
+export GI_TYPELIB_PATH="/usr/lib/ags${GI_TYPELIB_PATH:+:$GI_TYPELIB_PATH}"
+export LD_LIBRARY_PATH="/usr/lib/ags${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+exec /usr/bin/gjs -m "$HOME/.local/share/ags-compat/launcher.js" "$@"

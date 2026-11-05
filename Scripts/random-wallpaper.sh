@@ -27,8 +27,11 @@ if [ ! -f "$CONFIG_FILE" ]; then
     exit 1
 fi
 
-# Get a list of files in the directory
-files=("$WALLPAPER_DIR"/*)
+# Serialize wallpaper changes and ignore directories/non-image files.
+exec 9>"${XDG_RUNTIME_DIR:-/tmp}/random-wallpaper-$UID.lock"
+flock -n 9 || exit 0
+shopt -s nullglob nocaseglob
+files=("$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp})
 
 # Check if there are any files
 if [ ${#files[@]} -eq 0 ]; then
@@ -52,40 +55,41 @@ fi
 IFS=',' read -r primary secondary tertiary quaternary prompt_color theme nvim<<< "$color_scheme"
 
 # Update CSS file
-sed -i "s/@define-color primary .*/@define-color primary $primary;/" "$CSS_FILE"
-sed -i "s/@define-color secondary .*/@define-color secondary $secondary;/" "$CSS_FILE"
-sed -i "s/@define-color tertiary .*/@define-color tertiary $tertiary;/" "$CSS_FILE"
-sed -i "s/@define-color quaternary .*/@define-color quaternary $quaternary;/" "$CSS_FILE"
-sed -i "s|@theme .*|@theme \"$theme\"|" "$THEME_FILE"
+sed --follow-symlinks -i "s/@define-color primary .*/@define-color primary $primary;/" "$CSS_FILE"
+sed --follow-symlinks -i "s/@define-color secondary .*/@define-color secondary $secondary;/" "$CSS_FILE"
+sed --follow-symlinks -i "s/@define-color tertiary .*/@define-color tertiary $tertiary;/" "$CSS_FILE"
+sed --follow-symlinks -i "s/@define-color quaternary .*/@define-color quaternary $quaternary;/" "$CSS_FILE"
+sed --follow-symlinks -i "s|@theme .*|@theme \"$theme\"|" "$THEME_FILE"
 primary=$(echo $primary | cut -f2 -d"#")"ee"
-sed -i "s/col.active_border.*/col.active_border=rgba\($primary\)/g" "$HYPRLAND_FILE"
-sed -i "s/vim.cmd.colorscheme.*/vim.cmd.colorscheme \"$nvim\"/g" "$NVIM_FILE"
+sed --follow-symlinks -i "s/col.active_border.*/col.active_border=rgba\($primary\)/g" "$HYPRLAND_FILE"
+sed --follow-symlinks -i "s/vim.cmd.colorscheme.*/vim.cmd.colorscheme \"$nvim\"/g" "$NVIM_FILE"
 echo "color is $prompt_color"
-sed -i "s|=\"%F{.*}\"|=\"%F{$prompt_color}\"|g" "$ZSHLINE_FILE"
-sed -i "s|selection_background .*|selection_background $prompt_color|g" "$KITTY_FILE"
-# Create a temporary configuration file for hyprpaper
-temp_config=$(mktemp)
+sed --follow-symlinks -i "s|=\"%F{.*}\"|=\"%F{$prompt_color}\"|g" "$ZSHLINE_FILE"
+sed --follow-symlinks -i "s|selection_background .*|selection_background $prompt_color|g" "$KITTY_FILE"
+# Hyprpaper 0.8+ uses wallpaper blocks. An empty monitor matches all outputs.
+# Keep the selected wallpaper in the normal config so a restart restores it.
+HYPRPAPER_CONFIG="$HOME/.config/hypr/hyprpaper.conf"
+cat > "$HYPRPAPER_CONFIG" <<EOF
+wallpaper {
+    monitor =
+    path = $selected_file
+    fit_mode = cover
+}
+EOF
 
-# Write the configuration to the temporary file
-echo "preload = $selected_file" > "$temp_config"
-echo "wallpaper = eDP-1, $selected_file" >> "$temp_config"
-echo "wallpaper = DP-2, $selected_file" >> "$temp_config"
-
-# Execute hyprpaper with the temporary configuration file
-hyprpaper -c "$temp_config"
-
-# Remove the temporary configuration file
-rm "$temp_config"
+pkill -u "$UID" -x hyprpaper || true
+# Wait for the old instance to release its socket before starting another.
+for ((attempt = 0; attempt < 50; attempt++)); do
+    pgrep -u "$UID" -x hyprpaper >/dev/null || break
+    sleep 0.1
+done
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/hypr"
+mkdir -p "$STATE_DIR"
+nohup setsid hyprpaper -c "$HYPRPAPER_CONFIG" > "$STATE_DIR/hyprpaper.log" 2>&1 9>&- < /dev/null &
 
 echo "Applied wallpaper: $selected_file"
-echo "Updated CSS with colors: Primary: $primary, Secondary: $secondary, Tertiary: $tertiary, Quaternary: $quaternary , Prompt Color : $prompt_color"
-echo "Updated rofi theme to $theme"
 
-# Optionally, restart ags to apply the new CSS
-if command -v ags >/dev/null 2>&1; then
-    ags -q
-    ags &
-    echo "Restarted AGS to apply new styles"
-else
-    echo "AGS not found. You may need to restart it manually to apply new styles."
+# Refresh an existing bar without restarting it or starting a second instance.
+if pgrep -u "$UID" -f '/ags-compat/launcher.js' >/dev/null; then
+    "$HOME/.local/bin/ags" -r 'App.resetCss(); App.applyCss(App.configDir + "/style.css");' 9>&-
 fi
