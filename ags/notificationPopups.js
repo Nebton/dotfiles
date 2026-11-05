@@ -128,14 +128,17 @@ export function NotificationPopups(monitor = 0) {
         children: notifications.popups.map(Notification),
     })
 
-    function onNotified(_, /** @type {number} */ id) {
-        const n = notifications.getNotification(id)
-        if (n)
-            list.children = [Notification(n), ...list.children]
+    function onDismissed(_, /** @type {number} */ id) {
+        // A replacement may arrive with the same ID; remove every old widget.
+        list.children.filter(child => child.attribute.id === id)
+            .forEach(child => child.destroy());
     }
 
-    function onDismissed(_, /** @type {number} */ id) {
-        list.children.find(n => n.attribute.id === id)?.destroy()
+    function onNotified(_, /** @type {number} */ id) {
+        const n = notifications.getNotification(id);
+        onDismissed(null, id);
+        if (n?.popup)
+            list.children = [Notification(n), ...list.children];
     }
 
     list.hook(notifications, onNotified, "notified")
