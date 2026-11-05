@@ -61,6 +61,9 @@ To use this configuration:
 - The bar uses JetBrains Mono Nerd Font Mono, a dark translucent background, and
   the wallpaper accent. Workspace buttons are only recreated when workspace IDs
   change, avoiding flicker from window-title updates.
+- Below **20%** while unplugged, the battery icon flashes red and a persistent
+  critical notification asks you to connect the charger. The alert fires once
+  per episode, rearming after charging starts or the battery reaches 22%.
 - CPU and memory usage are sampled directly from `/proc` every 3 and 5 seconds;
   the clock uses GLib without starting shell commands.
 - Clipboard watching and the network applet start once per session, so config

@@ -1,10 +1,25 @@
 import GLib from "gi://GLib"
 import { NotificationPopups } from "./notificationPopups.js"
+import { createBatteryAlert, isLowBattery } from "./batteryAlert.js"
 const hyprland = await Service.import("hyprland")
 const audio = await Service.import("audio")
 const battery = await Service.import("battery")
 const systemtray = await Service.import('systemtray')
 const powerProfiles = await Service.import('powerprofiles')
+
+const checkBattery = createBatteryAlert(percent => {
+    Utils.notify({
+        appName: "Battery",
+        summary: "Low battery",
+        body: `Battery is at ${percent}%. Connect your charger.`,
+        iconName: "battery-caution-symbolic",
+        urgency: "critical",
+        timeout: 0,
+    }).catch(logError);
+});
+battery.connect("changed", () => checkBattery(battery));
+checkBattery(battery);
+
 
 // Top-level widgets
 function Workspaces() {
@@ -152,6 +167,10 @@ function BatteryStatus() {
 
     const progress = Widget.CircularProgress({
         className: "Battery",
+        setup: self => self.hook(battery, () => {
+            self.toggleClassName("low-battery", isLowBattery(battery));
+            self.tooltip_text = `Battery: ${battery.percent}%${battery.charging ? " (charging)" : ""}`;
+        }),
         rounded: false,
         inverted: false,
         startAt: 0.75,

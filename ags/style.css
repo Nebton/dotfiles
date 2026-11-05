@@ -153,3 +153,19 @@ menuitem:hover, .actions .action-button:hover {
   margin: 8px 3px 0;
   background-color: rgba(255, 255, 255, 0.05);
 }
+
+/* Animate only while low and unplugged; idle/charging has no animation. */
+@keyframes low-battery-pulse {
+  from { color: #ff454f; }
+  50% { color: #8c2029; }
+  to { color: #ff454f; }
+}
+
+.Battery.low-battery,
+.Battery.low-battery image {
+  color: #ff454f;
+  animation-name: low-battery-pulse;
+  animation-duration: 1.2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
