@@ -28,6 +28,11 @@ function NotificationIcon({ app_entry, app_icon, image }) {
 
 /** @param {import('resource:///com/github/Aylur/ags/service/notifications.js').Notification} n */
 function Notification(n) {
+    // Terminals often send the entire message as a title with no body.
+    // Keep the heading compact and give those messages the body layout too.
+    const messageInTitle = !n.body.trim() && (n.summary.length > 80 || n.summary.includes("\n"));
+    const heading = messageInTitle ? (n.app_name || "Notification") : n.summary;
+    const message = messageInTitle ? n.summary : n.body;
     const icon = Widget.Box({
         vpack: "start",
         class_name: "icon",
@@ -45,7 +50,7 @@ function Notification(n) {
         wrap: true,
         wrap_mode: Pango.WrapMode.WORD_CHAR,
         lines: -1,
-        label: n.summary,
+        label: heading,
         use_markup: true,
 
     })
@@ -56,7 +61,7 @@ function Notification(n) {
         use_markup: true,
         xalign: 0,
         justification: "left",
-        label: n.body,
+        label: message,
         width_chars: 40,
         max_width_chars: 40,
         truncate: "none",
@@ -94,7 +99,7 @@ function Notification(n) {
                     { vertical: true, hexpand: true, spacing: 6 },
                     title,
                     Widget.Scrollable({
-                        visible: Boolean(n.body),
+                        visible: Boolean(message),
                         hscroll: "never",
                         vscroll: "automatic",
                         propagate_natural_height: true,

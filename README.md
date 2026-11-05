@@ -72,6 +72,8 @@ To use this configuration:
   the application (or opens its menu when requested), right click opens its menu.
 - Notification titles and bodies wrap without ellipses. Long message bodies
   scroll after 360 pixels; ordinary messages expand to show all their text.
+  Long title-only messages use the app name as a heading and display the message
+  in the body. Text already shortened by the sender cannot be recovered.
 - Wallpaper logs are written to `~/.local/state/hypr/hyprpaper.log`.
 
 ## Notes
