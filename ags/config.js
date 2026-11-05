@@ -148,11 +148,9 @@ function SystemTray() {
         className: 'SystemTray',
         child: Widget.Icon({ icon: item.bind('icon') }),
         tooltipMarkup: item.bind('tooltip_markup'),
-        onPrimaryClick: (_, event) => item.is_menu
-            ? item.openMenu(event)
-            : item.activate(event),
+        // Several StatusNotifier apps expose a menu but no Activate method.
+        onPrimaryClick: (_, event) => item.openMenu(event),
         onSecondaryClick: (_, event) => item.openMenu(event),
-        onMiddleClick: (_, event) => item.secondaryActivate(event),
     });
     const sysTray = Widget.Box({
         children: systemtray.bind('items').as(i => i.map(SysTrayItem)),

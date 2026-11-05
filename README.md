@@ -73,8 +73,8 @@ To use this configuration:
 - `local/bin/ags` sets typelib/library paths before launching the tracked AGS 1
   entry point. This avoids the removed static GIRepository calls in newer GJS,
   without changing package-managed files in `/usr/bin`.
-- Tray buttons bind each application's icon and tooltip; left click activates
-  the application (or opens its menu when requested), right click opens its menu.
+- Tray buttons bind each application's icon and tooltip. Both left and right
+  click open the app's menu, including Wi-Fi networks and Hex controls.
 - Notification titles and bodies wrap without ellipses. Long message bodies
   scroll after 360 pixels; ordinary messages expand to show all their text.
   Long title-only messages use the app name as a heading and display the message
