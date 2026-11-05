@@ -1,3 +1,5 @@
+import Pango from "gi://Pango"
+
 const notifications = await Service.import("notifications")
 
 /** @param {import('resource:///com/github/Aylur/ags/service/notifications.js').Notification} n */
@@ -37,9 +39,12 @@ function Notification(n) {
         xalign: 0,
         justification: "left",
         hexpand: true,
-        max_width_chars: 24,
-        truncate: "end",
+        width_chars: 40,
+        max_width_chars: 40,
+        truncate: "none",
         wrap: true,
+        wrap_mode: Pango.WrapMode.WORD_CHAR,
+        lines: -1,
         label: n.summary,
         use_markup: true,
 
@@ -52,7 +57,12 @@ function Notification(n) {
         xalign: 0,
         justification: "left",
         label: n.body,
+        width_chars: 40,
+        max_width_chars: 40,
+        truncate: "none",
         wrap: true,
+        wrap_mode: Pango.WrapMode.WORD_CHAR,
+        lines: -1,
     })
 
     const actions = Widget.Box({
@@ -81,9 +91,25 @@ function Notification(n) {
             Widget.Box([
                 icon,
                 Widget.Box(
-                    { vertical: true },
+                    { vertical: true, hexpand: true, spacing: 6 },
                     title,
-                    body,
+                    Widget.Scrollable({
+                        visible: Boolean(n.body),
+                        hscroll: "never",
+                        vscroll: "automatic",
+                        propagate_natural_height: true,
+                        max_content_height: 360,
+                        child: body,
+                        setup: scroll => scroll.connect("size-allocate", () => {
+                            // Layer-shell uses the minimum requested height.
+                            // Request the wrapped text height, up to the scroll limit.
+                            const [, natural] = body.get_preferred_height_for_width(
+                                scroll.get_allocated_width());
+                            const height = Math.min(360, natural);
+                            if (scroll.min_content_height !== height)
+                                scroll.min_content_height = height;
+                        }),
+                    }),
                 ),
             ]),
             actions,

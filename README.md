@@ -70,6 +70,8 @@ To use this configuration:
   without changing package-managed files in `/usr/bin`.
 - Tray buttons bind each application's icon and tooltip; left click activates
   the application (or opens its menu when requested), right click opens its menu.
+- Notification titles and bodies wrap without ellipses. Long message bodies
+  scroll after 360 pixels; ordinary messages expand to show all their text.
 - Wallpaper logs are written to `~/.local/state/hypr/hyprpaper.log`.
 
 ## Notes
