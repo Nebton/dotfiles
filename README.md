@@ -79,6 +79,20 @@ To use this configuration:
   in the body. Text already shortened by the sender cannot be recovered.
 - Wallpaper logs are written to `~/.local/state/hypr/hyprpaper.log`.
 
+## Codex desktop notifications
+
+Merge `codex/notifications.toml` into `~/.codex/config.toml`, preserving your
+existing settings. The top-level `notify` command runs
+`Scripts/codex-notify.py` after each completed turn. It sends the complete reply
+to AGS with a short heading, removes Markdown decoration, and escapes notification
+markup. Restart Codex after changing its configuration (`codex resume` lets you
+reopen a conversation).
+
+Kitty's `filter_notification all` disables its terminal notification route to
+prevent duplicate, shortened notices. Applications that send desktop notifications
+directly still use AGS as usual. The Codex configuration fragment contains no
+account settings or credentials.
+
 ## Notes
 
 - These dotfiles are optimized for a system running **Hyprland** with a GTK environment.

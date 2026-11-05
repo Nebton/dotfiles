@@ -1,0 +1,6 @@
+# Merge into ~/.codex/config.toml; do not replace your existing configuration.
+# Keep notify at the top level, before any [table]. Adjust the home path if needed.
+notify = ["python3", "/home/doom/Scripts/codex-notify.py"]
+
+[tui]
+notifications = false
