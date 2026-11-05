@@ -56,8 +56,10 @@ To use this configuration:
   In Hex, enable **Start listening when Hex opens** (`hex settings set enable_on_launch on`).
 - **Super+L** locks the desktop; **Super+H/J** cycles previous/next window.
 - **Super+F** toggles fullscreen; **Super+Shift+F** toggles maximization.
-- Kitty uses **Noto Sans Cuneiform** at font size **13**. Ctrl+V pastes from
-  the clipboard so Hex can insert dictation in the terminal.
+- Kitty uses **Noto Sans Cuneiform** at font size **13**. Ctrl+V is passed to
+  terminal applications so they can handle clipboard images. Hex uses its
+  Terminal paste shortcut setting (`hex settings set paste_with_shift on`)
+  to paste dictation with Ctrl+Shift+V instead.
 - The bar uses JetBrains Mono Nerd Font Mono, a transparent background, and
   the wallpaper accent. Workspace buttons are only recreated when workspace IDs
   change, avoiding flicker from window-title updates.
