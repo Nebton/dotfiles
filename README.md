@@ -54,8 +54,8 @@ To use this configuration:
 - **Super+W** starts the widgets; **Super+Shift+W** closes them.
 - **Super+L** locks the desktop; **Super+H/J** cycles previous/next window.
 - **Super+F** toggles fullscreen; **Super+Shift+F** toggles maximization.
-- Kitty uses font size **13**.
-- The bar uses Inter with Nerd Font icons, a dark translucent background, and
+- Kitty uses **Source Code Pro** at font size **13**.
+- The bar uses JetBrains Mono Nerd Font Mono, a dark translucent background, and
   the wallpaper accent. Workspace buttons are only recreated when workspace IDs
   change, avoiding flicker from window-title updates.
 - CPU and memory usage are sampled directly from `/proc` every 3 and 5 seconds;

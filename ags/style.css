@@ -7,7 +7,7 @@
 @define-color muted #a3a9b8;
 
 * {
-  font-family: "Inter", "JetBrainsMono Nerd Font", sans-serif;
+  font-family: "JetBrainsMono Nerd Font Mono", monospace;
   font-size: 10pt;
   font-weight: 500;
   border: none;
