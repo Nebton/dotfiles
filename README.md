@@ -52,6 +52,8 @@ To use this configuration:
 - **Super+R** selects a wallpaper and applies its theme colors. Hyprpaper uses a
   `wallpaper` block with an empty monitor to cover all connected displays.
 - **Super+W** starts the widgets; **Super+Shift+W** closes them.
+- **Super+Space** switches keyboard layouts; **Alt+Space** holds to dictate in Hex.
+  In Hex, enable **Start listening when Hex opens** (`hex settings set enable_on_launch on`).
 - **Super+L** locks the desktop; **Super+H/J** cycles previous/next window.
 - **Super+F** toggles fullscreen; **Super+Shift+F** toggles maximization.
 - Kitty uses **Noto Sans Cuneiform** at font size **13**.
