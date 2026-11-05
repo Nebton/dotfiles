@@ -2,244 +2,154 @@
 @define-color secondary #1d212a;
 @define-color tertiary #ffffff;
 @define-color quaternary #000000;
+@define-color surface rgba(20, 22, 28, 0.94);
+@define-color foreground #e8eaf0;
+@define-color muted #a3a9b8;
 
 * {
-  font-family: "CC Wild Words";
-  font-size: 11pt;
-  font-weight: bold;
-  border-radius: 12px;
-  transition-property: background-color;
-  transition-duration: 0.5s;
+  font-family: "Inter", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 10pt;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  box-shadow: none;
+  background-image: none;
   background-color: transparent;
+  color: @foreground;
 }
 
 .bar {
-  background-color: transparent;
-  color: @primary;
+  background-color: @surface;
+  border-bottom: 1px solid alpha(@primary, 0.65);
+  border-radius: 0;
+  padding: 3px 8px;
+}
+
+button {
+  min-height: 24px;
+  padding: 0 7px;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .workspaces button {
- color: @primary;
-  margin-top: 3px;
-  margin-bottom: 6px;
-  padding-left: 6px;
-  padding-right: 6px;
-  margin-left: 3px;
-  margin-right: 3px;  
-  border-radius: 100px;
+  min-width: 20px;
+  min-height: 24px;
+  padding: 0 5px;
+  margin: 0 2px;
+  border-radius: 5px;
+  background-color: transparent;
+  border-bottom: 2px solid transparent;
+}
+
+.workspaces button label {
+  color: @muted;
+  font-weight: 600;
 }
 
 .workspaces button.focused {
-  background-color: @primary;
-  color: @tertiary;
-  box-shadow: #7A5980 0px 0px 3px;
+  background-color: alpha(@primary, 0.28);
+  border-bottom-color: @primary;
 }
 
+.workspaces button.focused label {
+  color: @foreground;
+}
 
 .workspaces button:hover {
-  background-color: rgb(248, 189, 150);
-  color: rgb(26, 24, 38);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-.launcher {
-  font-size: 20px;
-  padding: 0 8px;
-  color: #8d6594;
-  background-image: url("/path/to/your/image.jpg");
-  background-size: cover;
+.app-launcher button label {
+  font-family: "CC Wild Words", "Inter", sans-serif;
+  font-size: 12pt;
+  color: @foreground;
 }
 
-.media,
-.volume,
-.battery,
-.network
-.bluetooth,
-.power-menu {
+.clock {
   padding: 0 10px;
 }
 
-.power-menu button {
-  color: @primary;
+.clock label {
+  font-weight: 600;
+  font-feature-settings: "tnum";
 }
 
-.app-launcher {
-  padding: 0 10px;
-
+.volume, .processor, .memory {
+  padding: 0 7px;
 }
 
-.app-launcher button {
-  color: @primary;
-}
-
-.volume {
-  color: @primary;
-}
-
-.clock button {
-  color: @primary;
-}
-
-.media {
-  color: @primary;
-}
-
-player {
-    padding: 10px;
-    min-width: 1px;
-}
-
-.player .img {
-    min-width: 50px;
-    min-height: 50px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 10px;
-    margin-right: 0.7em;
-}
-
-.player .title {
-    font-size: 12px;
-}
-
-.player .artist {
-    font-size: 10px;
-    color: @insensitive_fg_color;
-}
-
-.player scale.position {
-    padding: 0;
-    margin-bottom: 2em;
-}
-
-.player scale.position trough {
-    min-height: 8px;
-}
-
-.player scale.position highlight {
-    background-color: @primary;
-}
-
-.player scale.position slider {
-    color : @primary;
-}
-
-
-.player button {
-    min-height: 1em;
-    min-width: 1em;
-    padding: .1em;
-}
-
-.player button.play-pause {
-    margin: 0 2em;
-}
-
-
-menu {
-   background-color: @tertiary;
-}
-
-menu > menuitem {
-    color: @primary;
-}
-
-menu :hover *{
-  color: @quaternary;
-}
-
-
-window.notification-popups box.notifications.icon {
-    padding: .5em;
-}
-
-.icon {
-    min-width: 68px;
-    min-height: 28px;
-    margin-right: 1em;
-}
-
-.icon image {
-    font-size: 58px;
-    /* to center the icon */
-    margin: 5px;
-}
-
-.icon box {
-    min-width: 68px;
-    min-height: 28px;
-    border-radius: 7px;
-}
-
-.notification {
-    min-width: 400px;
-    border-radius: 11px;
-    padding: 1em;
-    margin: .5em;
-    border: 1px solid @wm_borders_edge;
-    background-color: @tertiary;
-}
-
-.notification.critical {
-    border: 1px solid lightcoral;
-}
-
-.title {
-    color: @primary;
-    font-size: 14px;
-}
-
-.body {
-    color: @secondary;
-    font-size: 8px;
-}
-
-.actions .action-button {
-    margin: 0 .4em;
-    margin-top: .8em;
-}
-
-.actions .action-button:first-child {
-    margin-left: 0;
-}
-
-.actions .action-button:last-child {
-    margin-right: 0;
-}
-
-.Battery { 
-    color: @primary; 
-    min-width: 40px; 
-    min-height: 40px;
-    font-size: 1.5px; 
-    margin: 7px;
+.processor label, .memory label {
+  min-width: 26px;
+  font-feature-settings: "tnum";
 }
 
 .SystemTray {
-    color: @primary;
+  padding: 0 5px;
 }
 
-.processor {
-    color: @primary;
+.SystemTray image {
+  font-size: 16px;
 }
 
-.media-box {
-	background-color: @base-transparent;
-	min-width: 300px;
-	min-height: 435px;
-	border-radius: 25px;
-
+.Battery {
+  min-width: 26px;
+  min-height: 26px;
+  margin: 0 3px;
+  font-size: 2px;
+  color: @muted;
 }
 
-.cover-art {
-	background-size: cover;
-	min-width: 250px;
-	min-height: 250px;
-	margin: 30px 30px 7px;
-	border-radius: 12px;
+menu {
+  background-color: #17191f;
+  padding: 5px;
+  border: 1px solid alpha(@primary, 0.6);
 }
 
-.media-controls {
-	font-size: 35px;
-	margin: 3px 0;
+menuitem {
+  padding: 5px 9px;
 }
 
+menuitem:hover, .actions .action-button:hover {
+  background-color: alpha(@primary, 0.3);
+}
+
+.notification {
+  min-width: 340px;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 8px;
+  border: 1px solid alpha(@primary, 0.65);
+  background-color: @surface;
+}
+
+.notification.critical {
+  border-color: #ef6b73;
+}
+
+.notification .icon {
+  min-width: 40px;
+  min-height: 40px;
+  margin-right: 12px;
+}
+
+.notification .icon image {
+  font-size: 32px;
+}
+
+.title {
+  font-size: 11pt;
+  font-weight: 600;
+}
+
+.body {
+  color: @muted;
+  font-size: 10pt;
+}
+
+.actions .action-button {
+  margin: 8px 3px 0;
+  background-color: rgba(255, 255, 255, 0.05);
+}

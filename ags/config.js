@@ -1,3 +1,4 @@
+import GLib from "gi://GLib"
 import { NotificationPopups } from "./notificationPopups.js"
 const hyprland = await Service.import("hyprland")
 const audio = await Service.import("audio")
@@ -7,63 +8,56 @@ const powerProfiles = await Service.import('powerprofiles')
 
 // Top-level widgets
 function Workspaces() {
-    const activeId = hyprland.active.workspace.bind("id")
-    const workspaces = hyprland.bind("workspaces")
-        .as(ws => ws
+    let signature = null;
+    const updateActive = box => box.children.forEach(button => {
+        button.toggleClassName("focused",
+            button.attribute.workspaceId === hyprland.active.workspace.id);
+    });
+    const refresh = box => {
+        const ids = hyprland.workspaces
             .filter(({ id }) => id > 0)
-            .sort((a, b) => a.id - b.id)
-            .map(({ id }) => Widget.Button({
-                on_clicked: () => hyprland.messageAsync(`dispatch workspace ${id}`),
-                child: Widget.Label(`${id}`),
-                class_name: activeId.as(i => `${i === id ? "focused" : ""}`),
-            }))
-        )
+            .map(({ id }) => id)
+            .sort((a, b) => a - b);
+        const next = ids.join(",");
+        // Window-title events also notify workspaces. Keep existing buttons
+        // unless the actual workspace list changes to avoid redraw flicker.
+        if (next === signature)
+            return;
+        signature = next;
+        box.children = ids.map(id => Widget.Button({
+            attribute: { workspaceId: id },
+            tooltip_text: `Workspace ${id}`,
+            on_clicked: () => hyprland.messageAsync(`dispatch workspace ${id}`),
+            child: Widget.Label(`${id}`),
+        }));
+        updateActive(box);
+    };
     return Widget.Box({
         class_name: "workspaces",
-        children: workspaces,
-    })
+        setup: box => box
+            .hook(hyprland, refresh, "notify::workspaces")
+            .hook(hyprland.active.workspace, updateActive, "notify::id"),
+    });
 }
 
 function Clock() {
-    //Two time formats 
-    const timeFormat = Variable("", {
-        poll: [1000, 'date "+%H:%M 󰥔"'],
-    })
-    const dateFormat = Variable("", {
-        poll: [1000, 'date "+%A, %B %d, %Y 📆"'],
-    })
-
-    let showingTime = true;
-    return Widget.Box({
+    const showDate = Variable(false);
+    const now = Variable(GLib.DateTime.new_now_local(), {
+        poll: [1000, () => GLib.DateTime.new_now_local()],
+    });
+    return Widget.Button({
         class_name: "clock",
-        children: [
-            Widget.Button({
-                child: Widget.Label({
-                    class_name: `clock`,
-                    label: timeFormat.bind()
-                }),
-                on_clicked: self => {
-                    if (showingTime) {
-                        self.set_label(dateFormat.getValue());
-                    } else {
-                        self.set_label(timeFormat.getValue());
-                    }
-                    dateFormat.bind();
-                    showingTime = !showingTime
-                },
-                on_middle_click: () => Utils.execAsync(`bash -c "pkill gsimplecal || gsimplecal"`).catch(error => {
-                    if (error) {
-                        Utils.notify(`Error: ${error}`);
-                    }
-                }
-                ),
-                on_hover: self => {
-                    self.cursor = "pointer";
-                }
-
-            }),
-        ],
-    })
+        child: Widget.Label({
+            label: Utils.merge([now.bind(), showDate.bind()], (date, expanded) =>
+                date.format(expanded ? "%a, %d %b %Y" : "%H:%M")),
+        }),
+        tooltip_text: "Click for date · Middle click for calendar",
+        on_clicked: () => showDate.value = !showDate.value,
+        on_middle_click: () => Utils.execAsync([
+            "bash", "-c", "pkill -x gsimplecal || gsimplecal",
+        ]).catch(logError),
+        setup: self => self.connect("destroy", () => { now.dispose(); showDate.dispose(); }),
+    });
 }
 
 
@@ -164,7 +158,7 @@ function BatteryStatus() {
         value: battery.bind('percent').as(p => p / 100),
         child: Widget.Icon({
             icon: battery.bind(`icon_name`),
-            css: `font-size: 14px`,
+            css: `font-size: 12px`,
         }),
     })
 
@@ -191,11 +185,25 @@ function BatteryStatus() {
 
 
 function Processor() {
+    const readCpu = () => {
+        // guest/guest_nice are already included in user/nice counters.
+        const ticks = Utils.readFile("/proc/stat").split("\n")[0]
+            .trim().split(/\s+/).slice(1, 9).map(Number);
+        return { total: ticks.reduce((sum, n) => sum + n, 0), idle: ticks[3] + ticks[4] };
+    };
+    let previous = readCpu();
     const cpuUsage = Variable(0, {
-        poll: [2000, ['bash', '-c', `LC_ALL=C top -bn1 -p0 | awk '/^%Cpu/{print 100-$8}'`]],
+        poll: [3000, () => {
+            const current = readCpu();
+            const elapsed = current.total - previous.total;
+            const idle = current.idle - previous.idle;
+            previous = current;
+            return elapsed > 0 ? Math.max(0, Math.min(100, 100 * (1 - idle / elapsed))) : 0;
+        }],
     });
     return Widget.Button({
         class_name: "processor",
+        setup: self => self.connect("destroy", () => cpuUsage.dispose()),
         child:
             Widget.Box({
                 children: [
@@ -215,11 +223,18 @@ function Processor() {
 }
 
 function Memory() {
-    const ramUsage = Variable(0, {
-        poll: [2000, ['bash', '-c', `free -m | awk '/Mem:/ { printf("%.2f", $3/$2 * 100.0) }'`]],
-    });
+    const readMemory = () => {
+        const info = Object.fromEntries(Utils.readFile("/proc/meminfo")
+            .trim().split("\n").map(line => {
+                const [key, value] = line.split(":");
+                return [key, Number.parseInt(value, 10)];
+            }));
+        return 100 * (1 - info.MemAvailable / info.MemTotal);
+    };
+    const ramUsage = Variable(readMemory(), { poll: [5000, readMemory] });
     return Widget.Button({
-        class_name: "processor",
+        class_name: "memory",
+        setup: self => self.connect("destroy", () => ramUsage.dispose()),
         child:
             Widget.Box({
                 children: [
@@ -311,6 +326,7 @@ function Center() {
 function Right() {
     return Widget.Box({
         hpack: 'end',
+        spacing: 6,
         children: [
             Volume(),
             Processor(),

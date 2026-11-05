@@ -52,6 +52,16 @@ To use this configuration:
 - **Super+R** selects a wallpaper and applies its theme colors. Hyprpaper uses a
   `wallpaper` block with an empty monitor to cover all connected displays.
 - **Super+W** starts the widgets; **Super+Shift+W** closes them.
+- **Super+L** locks the desktop; **Super+H/J** cycles previous/next window.
+- **Super+F** toggles fullscreen; **Super+Shift+F** toggles maximization.
+- Kitty uses font size **13**.
+- The bar uses Inter with Nerd Font icons, a dark translucent background, and
+  the wallpaper accent. Workspace buttons are only recreated when workspace IDs
+  change, avoiding flicker from window-title updates.
+- CPU and memory usage are sampled directly from `/proc` every 3 and 5 seconds;
+  the clock uses GLib without starting shell commands.
+- Clipboard watching and the network applet start once per session, so config
+  reloads do not launch duplicate instances.
 - `local/bin/ags` sets typelib/library paths before launching the tracked AGS 1
   entry point. This avoids the removed static GIRepository calls in newer GJS,
   without changing package-managed files in `/usr/bin`.
