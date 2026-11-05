@@ -58,7 +58,7 @@ To use this configuration:
 - **Super+F** toggles fullscreen; **Super+Shift+F** toggles maximization.
 - Kitty uses **Noto Sans Cuneiform** at font size **13**. Ctrl+V pastes from
   the clipboard so Hex can insert dictation in the terminal.
-- The bar uses JetBrains Mono Nerd Font Mono, a dark translucent background, and
+- The bar uses JetBrains Mono Nerd Font Mono, a transparent background, and
   the wallpaper accent. Workspace buttons are only recreated when workspace IDs
   change, avoiding flicker from window-title updates.
 - Below **20%** while unplugged, the battery icon flashes red and a persistent
